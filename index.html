@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="pokedex">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokedex AngularJS</title>
+    <link rel="shortcut icon" type="image/gif/png" href="./app/img/pokebola.png"/>
+
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="app/css/font-awesome-4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="app/css/app.css">
+
+
+    <script src="app/lib/angularjs-1.8.2.js"></script>
+    <script src="app/js/util.js"></script>
+    <script src="app/domain/Evolucao.js"></script>
+    <script src="app/domain/Jogo.js"></script>
+    <script src="app/domain/Movimento.js"></script>
+    <script src="app/domain/StatusBasico.js"></script>
+    <script src="app/domain/Pokemon.js"></script>
+    <script src="app/js/app.js"></script>
+    <script src="app/js/controller.js"></script>
+    <script src="app/js/service.js"></script>
+
+</head>
+<body ng-controller="pokedexCtrl">
+
+    <h1>Pokedex - AngularJS</h1>
+
+    <div id="pokedex">
+
+        <div id="left-panel">
+        
+            <div class="left-top-container">
+                <svg height="100" width="225" class="left-svg">
+                    <polyline points="0,75 70,75 90,38 224,38" style="fill: none; stroke: black; stroke-width: 3"/>
+                </svg>
+                <div class="lights-container">
+                    <div class="big-light-boarder">
+                        <div class="big-light blue">
+                            <div class="big-dot light-blue"></div>
+                        </div>
+                    </div>
+                    <div class="small-lights-container">
+                        <div class="small-light red">
+                            <div class="dot light-red"></div>
+                        </div>
+                        <div class="small-light yellow">
+                            <div class="dot light-yellow"></div>
+                        </div>
+                        <div class="small-light green">
+                            <div class="dot light-green"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="screen-container">
+                <div class="screen">
+                <div class="top-screen-lights">
+                    <div class="mini-light red"></div>
+                    <div class="mini-light red"></div>
+                </div>
+                <div id="main-screen">
+                    <img ng-if="pokemon.img != ''" class="img" ng-src="{{ pokemon.img }}">
+                </div>
+                <div class="bottom-screen-lights">
+                    <div class="small-light red">
+                        <div class="dot light-red"></div>
+                    </div>
+                    <div class="burger">
+                        <div class="line"></div>
+                        <div class="line"></div>
+                        <div class="line"></div>
+                        <div class="line"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="buttons-container">
+                <div class="upper-buttons-container">
+                    <div class="big-button"></div>
+                    <div class="long-buttons-container">
+                        <div class="long-button red"></div>
+                        <div class="long-button light-blue"></div>
+                    </div>
+                </div>
+                <div class="nav-buttons-container">
+                    <div class="dots-container">
+                        <div>.</div>
+                        <div>.</div>
+                    </div>
+                    <div class="green-screen">
+                        <span id="name-screen">{{ pokemon.nome }}</span>
+                    </div>
+                    <div class="right-nav-container">
+                        <div class="nav-button">
+                            <div class="nav-center-circle"></div>
+                            <div class="nav-button-vertical"></div>
+                            <div class="nav-button-horizontal">
+                                <div class="border-top"></div>
+                                <div class="border-bottom"></div>
+                                <div class="cruz">
+                                    <span ng-click="anterior()">.</span>
+                                    <span ng-click="proximo()">.</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bottom-right-nav-container">
+                            <div class="small-light red">
+                                <div class="dot light-red"></div>
+                            </div>
+                            <div class="dots-container">
+                                <div class="black-dot">.</div>
+                                <div class="black-dot">.</div>
+                                <div class="black-dot">.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <div id="right-panel">
+        
+            <div class="empty-container">
+                <svg height="100%" width="100%">
+                <polyline points="0,0 0,40 138,40 158,75 250,75 250,0 0,0" style="fill: #f2f2f2; stroke: none; stroke-width: 3"/>
+                <polyline points="0,40 138,40 158,75 250,75" style="fill: none; stroke: black; stroke-width: 3" />
+                </svg>
+            </div>
+            
+            <div class="top-screen-container">
+                <div id="about-screen" class="right-panel-screen">
+                    <div class="panel-screen">
+                        <div ng-show="painel == 1">
+                            <div>Básico:</div>
+                            <div>
+                                <div class="tab-paragrafo">Altura: {{ pokemon.altura }}</div>
+                                <div class="tab-paragrafo">Peso: {{ pokemon.peso }}</div>
+                            </div>
+                        </div>
+                        <div ng-show="painel == 2">
+                            <div>Status:</div>
+                            <div ng-if="pokemon.statusBasicos.length > 0">
+                                <div ng-repeat="item in pokemon.statusBasicos">
+                                    <div class="tab-paragrafo">
+                                        <span>{{ item.nome }}: {{ item.status }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div ng-if="pokemon.statusBasicos.length == 0">
+                                <div class="tab-paragrafo">...</div>
+                            </div>                            
+                        </div>
+                        <div ng-show="painel == 3">
+                            <div>Jogos:</div>
+                            <div ng-if="pokemon.jogos.length > 0">
+                                <div ng-repeat="item in pokemon.jogos">
+                                    <div class="tab-paragrafo">
+                                        <span>{{ item.nome }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                             <div ng-if="pokemon.jogos.length == 0">
+                                <div class="tab-paragrafo">...</div>
+                            </div>
+                        </div>
+                        <div ng-show="painel == 4">
+                            <div>Movimentos:</div>
+                            <div ng-if="pokemon.movimentos.length > 0">
+                                <div ng-repeat="item in pokemon.movimentos">
+                                    <div class="tab-paragrafo">
+                                        <span>{{ item.nome }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div ng-if="pokemon.movimentos.length == 0">
+                                <div class="tab-paragrafo">...</div>
+                            </div>
+                        </div>
+                        <div ng-show="painel == 5">
+                            <div>Evoluções:</div>
+                            <div ng-if="pokemon.evolucoes.length > 0">
+                                <div ng-repeat="item in pokemon.evolucoes">
+                                    <div class="tab-paragrafo">
+                                        <span>{{ item.nome }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div ng-if="pokemon.evolucoes.length == 0">
+                                <div class="tab-paragrafo">...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="square-buttons-container">
+                <div class="blue-squares-container">
+                    <div ng-class="painel == 1 ? 'blue-square fundo-branco' : 'blue-square fundo-azul'" ng-click="principal()">
+                        <i class="fa fa-simplybuilt" aria-hidden="true"></i>
+                    </div>
+                    <div ng-class="painel == 2 ? 'blue-square fundo-branco' : 'blue-square fundo-azul'" class="blue-square" ng-click="statusBasico()">
+                        <i class="fa fa-bar-chart" aria-hidden="true"></i>
+                    </div>
+                    <div ng-class="painel == 3 ? 'blue-square fundo-branco' : 'blue-square fundo-azul'" class="blue-square" ng-click="jogos()">
+                        <i class="fa fa-gamepad" aria-hidden="true"></i>
+                    </div>
+                    <div ng-class="painel == 4 ? 'blue-square fundo-branco' : 'blue-square fundo-azul'" class="blue-square" ng-click="movimentos()">
+                        <i class="fa fa-superpowers" aria-hidden="true"></i>
+                    </div>
+                    <div ng-class="painel == 5 ? 'blue-square fundo-branco' : 'blue-square fundo-azul'" class="blue-square" ng-click="evolucao()">
+                        <i class="fa fa-level-up" aria-hidden="true"></i>
+                    </div>
+                    <div class="blue-square"></div>
+                    <div class="blue-square"></div>
+                    <div class="blue-square"></div>
+                    <div class="blue-square"></div>
+                    <div class="blue-square"></div>
+                </div>
+            </div>
+            
+            <div class="center-buttons-container">
+                <div class="center-left-container">
+                <div class="small-reds-container">
+                    <div class="small-light red">
+                    <div class="dot light-red"></div>
+                    </div>
+                    <div class="small-light red">
+                    <div class="dot light-red"></div>
+                    </div>
+                </div>
+                <div class="white-squares-container">
+                    <div class="white-square"></div>
+                    <div class="white-square"></div>
+                </div>
+                </div>
+                <div class="center-right-container">
+                <div class="thin-buttons-container">
+                    <div class="thin-button"></div>
+                    <div class="thin-button"></div>
+                </div>
+                <div class="yellow-button yellow">
+                    <div class="big-dot light-yellow"></div>
+                </div>
+                </div>
+            </div>
+            
+            <div class="bottom-screens-container">
+                <div id="type-screen" class="right-panel-screen">{{ pokemon.tipo }}</div>
+                <div id="id-screen" class="right-panel-screen centralizado">#{{ pokemon.id }}</div>
+            </div>
+        </div>
+        
+    </div>
+
+</body>
+</html>
